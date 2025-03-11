@@ -1,0 +1,4 @@
+httpx~=0.28.1
+fastapi[standard]~=0.115.11
+orjson~=3.10.15
+starlette~=0.46.1
