@@ -54,34 +54,12 @@ async def proxy_request(request: Request, call_next):
 
     headers = {"Cookie": NEOOM_CONNECT_COOKIE}
 
-    query_params: dict[str, str] = {}
-
-    if "from" in request.query_params:
-        from_time = request.query_params["from"]
-        try:
-            parsed_time = datetime.fromtimestamp(int(from_time) / 1000)
-            query_params["from"] = str(parsed_time.date())
-        except ValueError:
-            query_params["from"] = from_time
-
-    if "to" in request.query_params:
-        to_time = request.query_params["to"]
-        try:
-            parsed_time = datetime.fromtimestamp(int(to_time) / 1000 + 24 * 60 * 60)
-            query_params["to"] = str(parsed_time.date())
-        except ValueError:
-            query_params["to"] = to_time
-
-    for key, value in request.query_params.items():
-        if key not in ["from", "to"]:
-            query_params[key] = value
-
     response = await session.request(
         method=request.method,
         url=url,
         headers=headers,
         timeout=120,
-        params=query_params,
+        params=request.query_params,
     )
 
     if response.status_code == 200:
